@@ -1,8 +1,9 @@
 package com.FilipEM000.medical_clinic.service;
 
-import com.FilipEM000.medical_clinic.dto.PatientCreateDto;
+import com.FilipEM000.medical_clinic.dto.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
-import com.FilipEM000.medical_clinic.dto.PatientUpdateDto;
+import com.FilipEM000.medical_clinic.dto.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
 import com.FilipEM000.medical_clinic.repository.PatientRepository;
@@ -22,11 +23,11 @@ public class PatientService {
 
     public PatientDto getPatientByEmail(String email) {
         Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono pacjenta o emailu " + email));
+                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
         return PatientMapper.mapToDto(patient);
     }
 
-    public PatientDto createNewPatient(PatientCreateDto dto) {
+    public PatientDto createPatient(CreatePatientCommand dto) {
         Patient patient = PatientMapper.mapToEntity(dto);
         Patient saved = patientRepository.save(patient);
         return PatientMapper.mapToDto(saved);
@@ -34,18 +35,14 @@ public class PatientService {
 
     public void deletePatient(String email) {
         Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono pacjenta o emialu" + email));
-
+                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu" + email));
         patientRepository.remove(patient);
     }
 
-    public PatientDto updatePatient(String email, PatientUpdateDto dto) {
+    public PatientDto updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
         Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono pacjenta o emailu " + email));
-
-        patient.setFirstName(dto.firstName());
-        patient.setLastName(dto.lastName());
-        patient.setPassword(dto.password());
+                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
+        patient.update(updatePatientCommand);
         return PatientMapper.mapToDto(patient);
     }
 }

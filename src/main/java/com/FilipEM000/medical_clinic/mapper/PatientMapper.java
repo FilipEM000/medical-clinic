@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.mapper;
 
-import com.FilipEM000.medical_clinic.dto.PatientCreateDto;
+import com.FilipEM000.medical_clinic.dto.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.model.Patient;
 import lombok.AccessLevel;
@@ -19,7 +19,7 @@ public final class PatientMapper {
                 patient.getBirthday());
     }
 
-    public static Patient mapToEntity(PatientCreateDto dto) {
+    public static Patient mapToEntity(CreatePatientCommand dto) {
         return new Patient(
                 dto.email(),
                 dto.password(),

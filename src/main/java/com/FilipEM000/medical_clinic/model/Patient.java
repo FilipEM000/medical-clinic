@@ -1,5 +1,6 @@
 package com.FilipEM000.medical_clinic.model;
 
+import com.FilipEM000.medical_clinic.dto.UpdatePatientCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +18,10 @@ public class Patient {
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
+
+    public void update(UpdatePatientCommand updatePatientCommand) {
+        setFirstName(updatePatientCommand.firstName());
+        setLastName(updatePatientCommand.lastName());
+        setPassword(updatePatientCommand.password());
+    }
 }

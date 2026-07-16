@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.dto;
 
-public record PatientUpdateDto(
+public record UpdatePatientCommand(
         String email,
         String password,
         String firstName,

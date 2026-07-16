@@ -4,9 +4,11 @@ import com.FilipEM000.medical_clinic.model.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.List.copyOf;
+import static java.util.Optional.ofNullable;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class PatientRepository {
     private final List<Patient> patients;
 
     public List<Patient> findAll() {
-        return Collections.unmodifiableList(patients);
+        return copyOf(patients);
     }
 
     public Optional<Patient> findByEmail(String email) {
@@ -24,9 +26,7 @@ public class PatientRepository {
     }
 
     public Patient save(Patient patient) {
-        if (patient != null) {
-            patients.add(patient);
-        }
+        ofNullable(patient).ifPresent(patients::add);
         return patient;
     }
 

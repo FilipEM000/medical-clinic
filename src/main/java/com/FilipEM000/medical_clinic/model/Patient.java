@@ -24,4 +24,8 @@ public class Patient {
         setLastName(updatePatientCommand.lastName());
         setPassword(updatePatientCommand.password());
     }
+
+    public void changePassword(String password) {
+        setPassword(password);
+    }
 }

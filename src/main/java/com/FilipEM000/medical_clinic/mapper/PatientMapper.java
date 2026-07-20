@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PatientMapper {
+
     public static PatientDto mapToDto(Patient patient) {
         return new PatientDto(
                 patient.getEmail(),

@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.dto.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
+import com.FilipEM000.medical_clinic.dto.ChangePasswordCommand;
 import com.FilipEM000.medical_clinic.dto.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.model.Patient;
 import com.FilipEM000.medical_clinic.service.PatientService;
@@ -47,7 +48,7 @@ public class PatientController {
     }
 
     @PatchMapping("/{email}/password")
-    public PatientDto changePassword(@PathVariable String email, @RequestBody String password) {
-        return patientService.changePassword(email, password);
+    public PatientDto changePassword(@PathVariable String email, @RequestBody ChangePasswordCommand changePasswordCommand) {
+        return patientService.changePassword(email, changePasswordCommand.password());
     }
 }

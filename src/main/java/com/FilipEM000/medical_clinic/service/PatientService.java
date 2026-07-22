@@ -1,8 +1,8 @@
 package com.FilipEM000.medical_clinic.service;
 
-import com.FilipEM000.medical_clinic.dto.CreatePatientCommand;
+import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
-import com.FilipEM000.medical_clinic.dto.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientService {
     private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
 
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
@@ -24,32 +25,34 @@ public class PatientService {
     public PatientDto getPatientByEmail(String email) {
         Patient patient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
-        return PatientMapper.mapToDto(patient);
+        return patientMapper.mapToDto(patient);
     }
 
     public PatientDto createPatient(CreatePatientCommand dto) {
-        Patient patient = PatientMapper.mapToEntity(dto);
+        Patient patient = patientMapper.mapToEntity(dto);
         Patient saved = patientRepository.save(patient);
-        return PatientMapper.mapToDto(saved);
+        return patientMapper.mapToDto(saved);
     }
 
     public void deletePatient(String email) {
-        Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu" + email));
+        Patient patient = findPatientByEmail(email);
         patientRepository.remove(patient);
     }
 
     public PatientDto updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
-        Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
+        Patient patient = findPatientByEmail(email);
         patient.update(updatePatientCommand);
-        return PatientMapper.mapToDto(patient);
+        return patientMapper.mapToDto(patient);
     }
 
     public PatientDto changePassword(String email, String password) {
-        Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
+        Patient patient = findPatientByEmail(email);
         patient.changePassword(password);
-        return PatientMapper.mapToDto(patient);
+        return patientMapper.mapToDto(patient);
+    }
+
+    private Patient findPatientByEmail(String email) {
+        return patientRepository.findByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException(String.format("Nie znaleziono pacjenta o emailu %s", email)));
     }
 }

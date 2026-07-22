@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.model;
 
-import com.FilipEM000.medical_clinic.dto.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

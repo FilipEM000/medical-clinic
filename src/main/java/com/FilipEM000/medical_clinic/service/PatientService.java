@@ -18,13 +18,14 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
 
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+    public List<PatientDto> getAllPatients() {
+        return patientRepository.findAll().stream()
+                .map(patientMapper::mapToDto)
+                .toList();
     }
 
     public PatientDto getPatientByEmail(String email) {
-        Patient patient = patientRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException("Nie znaleziono pacjenta o emailu " + email));
+        Patient patient = findPatientByEmail(email);
         return patientMapper.mapToDto(patient);
     }
 

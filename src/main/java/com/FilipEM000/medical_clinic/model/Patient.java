@@ -20,9 +20,9 @@ public class Patient {
     private LocalDate birthday;
 
     public void update(UpdatePatientCommand updatePatientCommand) {
-        setFirstName(updatePatientCommand.firstName());
-        setLastName(updatePatientCommand.lastName());
-        setPassword(updatePatientCommand.password());
+        this.firstName = updatePatientCommand.firstName();
+        this.lastName = updatePatientCommand.lastName();
+        this.password = updatePatientCommand.password();
     }
 
     public void changePassword(String password) {

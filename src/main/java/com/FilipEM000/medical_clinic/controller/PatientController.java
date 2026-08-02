@@ -1,6 +1,5 @@
 package com.FilipEM000.medical_clinic.controller;
 
-import com.FilipEM000.medical_clinic.command.ChangePasswordCommand;
 import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
@@ -69,28 +68,15 @@ public class PatientController {
         patientService.deletePatient(email);
     }
 
-    @Operation(summary = "Zamień pacjenta")
+    @Operation(summary = "Zaktualizuj pacjenta")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pacjent poprawnie zaktualizowany",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PatientDto.class))}),
+            @ApiResponse(responseCode = "200", description = "Pacjent poprawnie zaktualizowany"),
             @ApiResponse(responseCode = "404", description = "Nie znaleziono pacjenta",
                     content = @Content)
     })
     @PutMapping("/{email}")
-    public PatientDto updatePatient(@PathVariable String email, @RequestBody UpdatePatientCommand updatePatientCommand) {
-        return patientService.updatePatient(email, updatePatientCommand);
-    }
-
-    @Operation(summary = "Zmień haslo pacjenta")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Haslo zaaktualizowane"),
-            @ApiResponse(responseCode = "404", description = "Pacjent nie znaleziony",
-                    content = @Content)
-    })
     @ResponseStatus(NO_CONTENT)
-    @PatchMapping("/{email}/password")
-    public void changePassword(@PathVariable String email, @RequestBody ChangePasswordCommand changePasswordCommand) {
-        patientService.changePassword(email, changePasswordCommand.password());
+    public void update(@PathVariable String email, @RequestBody UpdatePatientCommand updatePatientCommand) {
+        patientService.updatePatient(email, updatePatientCommand);
     }
 }

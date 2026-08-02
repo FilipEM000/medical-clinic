@@ -1,8 +1,9 @@
 package com.FilipEM000.medical_clinic.command;
 
+import java.time.LocalDate;
+
 public record UpdatePatientCommand(
-        String email,
-        String password,
-        String firstName,
-        String lastName) {
+        String phoneNumber,
+        String idCardNo,
+        LocalDate birthDay) {
 }

@@ -1,31 +1,32 @@
 package com.FilipEM000.medical_clinic.model;
 
 import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
 public class Patient {
-    private String email;
-    private String password;
+    @Id
+    @GeneratedValue
+    private Long id;
     private String idCardNo;
-    private String firstName;
-    private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
 
-    public void update(UpdatePatientCommand updatePatientCommand) {
-        this.firstName = updatePatientCommand.firstName();
-        this.lastName = updatePatientCommand.lastName();
-        this.password = updatePatientCommand.password();
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public void changePassword(String password) {
-        setPassword(password);
+    public void update(UpdatePatientCommand updatePatientCommand) {
+        this.idCardNo = updatePatientCommand.idCardNo();
+        this.phoneNumber = updatePatientCommand.phoneNumber();
+        this.birthday = updatePatientCommand.birthDay();
     }
 }

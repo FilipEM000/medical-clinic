@@ -1,12 +1,12 @@
 package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
-import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
-import com.FilipEM000.medical_clinic.repository.PatientRepository;
+import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PatientService {
-    private final PatientRepository patientRepository;
+    private final PatientJpaRepository patientRepository;
     private final PatientMapper patientMapper;
 
     public List<PatientDto> getAllPatients() {
@@ -29,31 +29,25 @@ public class PatientService {
         return patientMapper.mapToDto(patient);
     }
 
-    public PatientDto createPatient(CreatePatientCommand dto) {
-        Patient patient = patientMapper.mapToEntity(dto);
+    public PatientDto createPatient(CreatePatientCommand createPatientCommand) {
+        Patient patient = patientMapper.mapToEntity(createPatientCommand);
         Patient saved = patientRepository.save(patient);
         return patientMapper.mapToDto(saved);
     }
 
     public void deletePatient(String email) {
         Patient patient = findPatientByEmail(email);
-        patientRepository.remove(patient);
+        patientRepository.delete(patient);
     }
 
-    public PatientDto updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
+    public void updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
         Patient patient = findPatientByEmail(email);
         patient.update(updatePatientCommand);
-        return patientMapper.mapToDto(patient);
-    }
-
-    public PatientDto changePassword(String email, String password) {
-        Patient patient = findPatientByEmail(email);
-        patient.changePassword(password);
-        return patientMapper.mapToDto(patient);
+        patientRepository.save(patient);
     }
 
     private Patient findPatientByEmail(String email) {
-        return patientRepository.findByEmail(email)
+        return patientRepository.findByUserEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException(String.format("Nie znaleziono pacjenta o emailu %s", email)));
     }
 }

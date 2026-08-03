@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.model;
 
-import com.FilipEM000.medical_clinic.command.UpdateUserCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +22,9 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Patient patient;
+
+    @OneToOne(mappedBy = "user")
+    private Doctor doctor;
 
     public void update(UpdateUserCommand updateUserCommand) {
         this.firstName = updateUserCommand.firstName();

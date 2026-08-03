@@ -1,7 +1,7 @@
 package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.command.ChangePasswordCommand;
-import com.FilipEM000.medical_clinic.command.UpdateUserCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
 import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class UserController {
     private final UserService userService;
 
-    @Operation(summary = "zwróć wszystkich użytkowników")
+    @Operation(summary = "Zwróć wszystkich użytkowników")
     @ApiResponse(responseCode = "200", description = "znaleziono użytkowników",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @GetMapping
@@ -30,6 +30,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @Operation(summary = "Zwróć użytkownika po emailu")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "znaleziono użytkownika",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),

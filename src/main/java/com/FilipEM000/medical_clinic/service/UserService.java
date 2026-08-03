@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.service;
 
-import com.FilipEM000.medical_clinic.command.UpdateUserCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
 import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.exception.UserNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.UserMapper;

@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.model;
 
-import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

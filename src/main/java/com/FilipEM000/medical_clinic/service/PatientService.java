@@ -1,7 +1,7 @@
 package com.FilipEM000.medical_clinic.service;
 
-import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
-import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
@@ -25,7 +25,7 @@ public class PatientService {
     }
 
     public PatientDto getPatientByEmail(String email) {
-        Patient patient = findPatientByEmail(email);
+        Patient patient = findPatientByUserEmail(email);
         return patientMapper.mapToDto(patient);
     }
 
@@ -36,17 +36,17 @@ public class PatientService {
     }
 
     public void deletePatient(String email) {
-        Patient patient = findPatientByEmail(email);
+        Patient patient = findPatientByUserEmail(email);
         patientRepository.delete(patient);
     }
 
     public void updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
-        Patient patient = findPatientByEmail(email);
+        Patient patient = findPatientByUserEmail(email);
         patient.update(updatePatientCommand);
         patientRepository.save(patient);
     }
 
-    private Patient findPatientByEmail(String email) {
+    private Patient findPatientByUserEmail(String email) {
         return patientRepository.findByUserEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException(String.format("Nie znaleziono pacjenta o emailu %s", email)));
     }

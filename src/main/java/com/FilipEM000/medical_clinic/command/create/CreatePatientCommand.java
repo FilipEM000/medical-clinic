@@ -1,4 +1,4 @@
-package com.FilipEM000.medical_clinic.command;
+package com.FilipEM000.medical_clinic.command.create;
 
 import java.time.LocalDate;
 

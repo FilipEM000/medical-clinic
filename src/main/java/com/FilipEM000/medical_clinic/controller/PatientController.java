@@ -1,7 +1,7 @@
 package com.FilipEM000.medical_clinic.controller;
 
-import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
-import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,15 +64,14 @@ public class PatientController {
     })
     @DeleteMapping("/{email}")
     @ResponseStatus(NO_CONTENT)
-    public void deletePatient(@PathVariable String email) {
+    public void delete(@PathVariable String email) {
         patientService.deletePatient(email);
     }
 
     @Operation(summary = "Zaktualizuj pacjenta")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pacjent poprawnie zaktualizowany"),
-            @ApiResponse(responseCode = "404", description = "Nie znaleziono pacjenta",
-                    content = @Content)
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pacjenta")
     })
     @PutMapping("/{email}")
     @ResponseStatus(NO_CONTENT)

@@ -3,8 +3,10 @@ package com.FilipEM000.medical_clinic.service;
 import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
+import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
+import com.FilipEM000.medical_clinic.mapper.VisitMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
 import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 public class PatientService {
     private final PatientJpaRepository patientRepository;
     private final PatientMapper patientMapper;
+    private final VisitMapper visitMapper;
 
     public List<PatientDto> getAllPatients() {
         return patientRepository.findAll().stream()
@@ -44,6 +47,13 @@ public class PatientService {
         Patient patient = findPatientByUserEmail(email);
         patient.update(updatePatientCommand);
         patientRepository.save(patient);
+    }
+
+    public List<VisitDto> getAllVisits(String email) {
+        Patient patient = findPatientByUserEmail(email);
+        return patient.getVisits().stream()
+                .map(visitMapper::mapToDto)
+                .toList();
     }
 
     private Patient findPatientByUserEmail(String email) {

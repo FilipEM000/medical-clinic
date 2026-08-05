@@ -5,5 +5,5 @@ import java.time.LocalDate;
 public record UpdatePatientCommand(
         String phoneNumber,
         String idCardNo,
-        LocalDate birthDay) {
+        LocalDate birthday) {
 }

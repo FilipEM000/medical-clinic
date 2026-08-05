@@ -1,6 +1,6 @@
 package com.FilipEM000.medical_clinic.controller;
 
-import com.FilipEM000.medical_clinic.command.ChangePasswordCommand;
+import com.FilipEM000.medical_clinic.command.update.ChangePasswordCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
 import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.service.UserService;

@@ -70,7 +70,7 @@ public class ClinicController {
 
     @Operation(summary = "Zaktualizuj klinikę")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Klinika pomyślnie zaktualizowana"),
+            @ApiResponse(responseCode = "204", description = "Klinika pomyślnie zaktualizowana"),
             @ApiResponse(responseCode = "404", description = "Nie znaleziono kliniki")
     })
     @PutMapping("/{name}")

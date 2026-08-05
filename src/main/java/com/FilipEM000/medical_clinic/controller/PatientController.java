@@ -3,6 +3,7 @@ package com.FilipEM000.medical_clinic.controller;
 import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
+import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,6 +44,12 @@ public class PatientController {
     @GetMapping("/{email}")
     public PatientDto getByEmail(@PathVariable String email) {
         return patientService.getPatientByEmail(email);
+    }
+
+    @Operation(summary = "Return all guest visits")
+    @GetMapping("/{email}/visits")
+    public List<VisitDto> getAllVisits(@PathVariable String email) {
+        return patientService.getAllVisits(email);
     }
 
     @Operation(summary = "Stwórz nowego pacjenta")

@@ -17,6 +17,7 @@ public class Clinic {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String name;
     private String city;
     private String postcode;

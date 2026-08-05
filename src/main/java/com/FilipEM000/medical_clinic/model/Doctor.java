@@ -17,17 +17,20 @@ public class Doctor {
     @Id
     @GeneratedValue()
     private Long id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     private String specialization;
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "Doctor_Clinic",
             joinColumns = {@JoinColumn(name ="doctor_id")},
             inverseJoinColumns = {@JoinColumn(name = "clinic_id")}
     )
     private List<Clinic> clinics;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<Visit> visits;
 
     public void update(UpdateDoctorCommand updateDoctorCommand) {
         this.specialization = updateDoctorCommand.specialization();

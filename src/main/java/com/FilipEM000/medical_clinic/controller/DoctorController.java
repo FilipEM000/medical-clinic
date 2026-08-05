@@ -60,7 +60,7 @@ public class DoctorController {
     @Operation(description = "Usuń doktora po emailu")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Doktor usunięty"),
-            @ApiResponse(responseCode = "404", description = "Nie znaleiono doktora")
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono doktora")
     })
     @DeleteMapping("/{email}")
     @ResponseStatus(NO_CONTENT)
@@ -70,7 +70,7 @@ public class DoctorController {
 
     @Operation(summary = "Zaktualizuj doktora")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Doktor pomyślnie zaktualizowany"),
+            @ApiResponse(responseCode = "204", description = "Doktor pomyślnie zaktualizowany"),
             @ApiResponse(responseCode = "404", description = "Nie znaleziono doktora")
     })
     @PutMapping("/{email}")
@@ -95,7 +95,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "200", description = "Doktor został pomyślnie wypisany z kliniki"),
             @ApiResponse(responseCode = "404", description = "Nie znaleziono doktora lub kliniki")
     })
-    @PostMapping("/{email}/clinics/{clinicName}")
+    @DeleteMapping("/{email}/clinics/{clinicName}")
     @ResponseStatus(NO_CONTENT)
     public void unassignClinic(@PathVariable String email, @PathVariable String clinicName) {
         doctorService.unassignClinic(email, clinicName);

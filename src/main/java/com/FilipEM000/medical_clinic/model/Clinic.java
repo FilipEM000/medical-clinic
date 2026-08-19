@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.model;
 
 import com.FilipEM000.medical_clinic.command.update.UpdateClinicCommand;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name = "clinics")
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Clinic {
     @Id
     @GeneratedValue

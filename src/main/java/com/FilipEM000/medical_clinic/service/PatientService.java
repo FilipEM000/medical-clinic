@@ -9,6 +9,7 @@ import com.FilipEM000.medical_clinic.mapper.PatientMapper;
 import com.FilipEM000.medical_clinic.mapper.VisitMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
 import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class PatientService {
         return patientMapper.mapToDto(patient);
     }
 
+    @Transactional
     public PatientDto createPatient(CreatePatientCommand createPatientCommand) {
         Patient patient = patientMapper.mapToEntity(createPatientCommand);
         Patient saved = patientRepository.save(patient);
@@ -43,6 +45,7 @@ public class PatientService {
         patientRepository.delete(patient);
     }
 
+    @Transactional
     public void updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
         Patient patient = findPatientByUserEmail(email);
         patient.update(updatePatientCommand);
@@ -58,6 +61,6 @@ public class PatientService {
 
     private Patient findPatientByUserEmail(String email) {
         return patientRepository.findByUserEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException(String.format("Nie znaleziono pacjenta o emailu %s", email)));
+                .orElseThrow(() -> new PatientNotFoundException(email));
     }
 }

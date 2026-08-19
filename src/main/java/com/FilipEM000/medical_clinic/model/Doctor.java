@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.model;
 
 import com.FilipEM000.medical_clinic.command.update.UpdateDoctorCommand;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "doctors")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Doctor {
     @Id
     @GeneratedValue()
@@ -34,5 +36,20 @@ public class Doctor {
 
     public void update(UpdateDoctorCommand updateDoctorCommand) {
         this.specialization = updateDoctorCommand.specialization();
+    }
+
+    public void addVisit(Visit visit) {
+        visits.add(visit);
+        visit.setDoctor(this);
+    }
+
+    public void addClinic(Clinic clinic) {
+        clinics.add(clinic);
+        clinic.getDoctors().add(this);
+    }
+
+    public void removeClinic(Clinic clinic) {
+        clinics.remove(clinic);
+        clinic.getDoctors().remove(this);
     }
 }

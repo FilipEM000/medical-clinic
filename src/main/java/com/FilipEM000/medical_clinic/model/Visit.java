@@ -1,6 +1,7 @@
 package com.FilipEM000.medical_clinic.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "visits")
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Visit {
     @Id
     @GeneratedValue

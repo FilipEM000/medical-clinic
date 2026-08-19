@@ -7,6 +7,7 @@ import com.FilipEM000.medical_clinic.exception.ClinicNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.ClinicMapper;
 import com.FilipEM000.medical_clinic.model.Clinic;
 import com.FilipEM000.medical_clinic.repository.ClinicJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class ClinicService {
         return clinicMapper.mapToDto(clinic);
     }
 
+    @Transactional
     public ClinicDto createClinic(CreateClinicCommand createClinicCommand) {
         Clinic clinic = clinicMapper.mapToEntity(createClinicCommand);
         Clinic saved = clinicRepository.save(clinic);
@@ -40,6 +42,7 @@ public class ClinicService {
         clinicRepository.delete(clinic);
     }
 
+    @Transactional
     public void updateClinic(String name, UpdateClinicCommand updateClinicCommand) {
         Clinic clinic = findClinicByName(name);
         clinic.update(updateClinicCommand);
@@ -48,6 +51,6 @@ public class ClinicService {
 
     private Clinic findClinicByName(String name) {
         return clinicRepository.findByName(name)
-                .orElseThrow(() -> new ClinicNotFoundException(String.format("Nie znaleziono kliniki o nazwie %s", name)));
+                .orElseThrow(() -> new ClinicNotFoundException(name));
     }
 }

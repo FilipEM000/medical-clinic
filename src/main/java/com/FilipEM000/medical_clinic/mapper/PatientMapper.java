@@ -13,6 +13,8 @@ public interface PatientMapper {
 
     PatientDto mapToDto(Patient patient);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "visits", ignore = true)
     @Mapping(target = "user.email", source = "email")
     @Mapping(target = "user.password", source = "password")
     @Mapping(target = "user.firstName", source = "firstName")

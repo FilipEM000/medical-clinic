@@ -2,9 +2,7 @@ package com.FilipEM000.medical_clinic.model;
 
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 public class Patient {
     @Id
@@ -32,5 +31,10 @@ public class Patient {
         this.idCardNo = updatePatientCommand.idCardNo();
         this.phoneNumber = updatePatientCommand.phoneNumber();
         this.birthday = updatePatientCommand.birthday();
+    }
+
+    public void addVisit(Visit visit) {
+        visits.add(visit);
+        visit.setPatient(this);
     }
 }

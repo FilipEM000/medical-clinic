@@ -50,7 +50,7 @@ public class UserController {
     @ResponseStatus(NO_CONTENT)
     @PatchMapping("/{email}/password")
     public void changePassword(@PathVariable String email, @RequestBody ChangePasswordCommand changePasswordCommand) {
-        userService.changePassword(email, changePasswordCommand.password());
+        userService.changePassword(email, changePasswordCommand);
     }
 
     @Operation(summary = "Zaktualizuj użytkownika")

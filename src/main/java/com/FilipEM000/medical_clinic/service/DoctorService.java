@@ -10,6 +10,7 @@ import com.FilipEM000.medical_clinic.model.Clinic;
 import com.FilipEM000.medical_clinic.model.Doctor;
 import com.FilipEM000.medical_clinic.repository.ClinicJpaRepository;
 import com.FilipEM000.medical_clinic.repository.DoctorJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class DoctorService {
         return doctorMapper.mapToDto(doctor);
     }
 
+    @Transactional
     public DoctorDto createDoctor(CreateDoctorCommand createDoctorCommand) {
         Doctor doctor = doctorMapper.mapToEntity(createDoctorCommand);
         Doctor saved = doctorRepository.save(doctor);
@@ -45,30 +47,33 @@ public class DoctorService {
         doctorRepository.delete(doctor);
     }
 
+    @Transactional
     public void updateDoctor(String email, UpdateDoctorCommand updateDoctorCommand) {
         Doctor doctor = findDoctorByEmail(email);
         doctor.update(updateDoctorCommand);
         doctorRepository.save(doctor);
     }
 
+    @Transactional
     public void assignClinic(String doctorEmail, String name) {
         Doctor doctor = findDoctorByEmail(doctorEmail);
         Clinic clinic = clinicRepository.findByName(name)
-                .orElseThrow(() -> new ClinicNotFoundException(String.format("Nie znalzeiono kliniki o nazwie %s", name)));
-        doctor.getClinics().add(clinic);
+                .orElseThrow(() -> new ClinicNotFoundException(name));
+        doctor.addClinic(clinic);
         doctorRepository.save(doctor);
     }
 
+    @Transactional
     public void unassignClinic(String doctorEmail, String name) {
         Doctor doctor = findDoctorByEmail(doctorEmail);
         Clinic clinic = clinicRepository.findByName(name)
-                .orElseThrow(() -> new ClinicNotFoundException(String.format("Nie znalzeiono kliniki o nazwie %s", name)));
-        doctor.getClinics().remove(clinic);
+                .orElseThrow(() -> new ClinicNotFoundException(name));
+        doctor.removeClinic(clinic);
         doctorRepository.save(doctor);
     }
 
     private Doctor findDoctorByEmail(String email) {
         return doctorRepository.findByUserEmail(email)
-                .orElseThrow(() -> new DoctorNotFoundException(String.format("Nie znaleziono doktora o emailu %s", email)));
+                .orElseThrow(() -> new DoctorNotFoundException(email));
     }
 }

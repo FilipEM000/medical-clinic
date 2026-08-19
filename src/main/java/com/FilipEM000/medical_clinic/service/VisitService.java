@@ -12,6 +12,7 @@ import com.FilipEM000.medical_clinic.repository.DoctorJpaRepository;
 import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
 import com.FilipEM000.medical_clinic.repository.VisitJpaRepository;
 import com.FilipEM000.medical_clinic.validator.VisitValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class VisitService {
                 .toList();
     }
 
+    @Transactional
     public VisitDto createVisit(CreateVisitCommand createVisitCommand) {
         VisitValidator.validateVisitData(createVisitCommand);
 
@@ -42,18 +44,18 @@ public class VisitService {
         Doctor doctor = doctorRepository.findById(createVisitCommand.doctor())
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor not found"));
         Visit visit = visitMapper.mapToEntity(createVisitCommand);
-        visit.setDoctor(doctor);
+        doctor.addVisit(visit);
         Visit saved = visitRepository.save(visit);
         return visitMapper.mapToDto(saved);
     }
 
+    @Transactional
     public void assignPatient(Long visitId, AssignPatientCommand assignPatientCommand) {
         Visit visit = visitRepository.findById(visitId)
-                .orElseThrow(() -> new VisitNotFoundException(String.format("Visit with id %s was not found", visitId)));
+                .orElseThrow(() -> new VisitNotFoundException(String.valueOf(visitId)));
 
         Patient patient = patientRepository.findByUserEmail(assignPatientCommand.patientEmail())
-                .orElseThrow(() -> new PatientNotFoundException(
-                        String.format("Patient with email %s was not found", assignPatientCommand.patientEmail())));
+                .orElseThrow(() -> new PatientNotFoundException(assignPatientCommand.patientEmail()));
 
         if (visit.getPatient() != null) {
             throw new VisitAlreadyTakenException(String.format("Visit with id %s is already taken", visitId));
@@ -63,7 +65,7 @@ public class VisitService {
             throw new DateInThePastException("Visit is already in the past");
         }
 
-        visit.setPatient(patient);
+        patient.addVisit(visit);
         visitRepository.save(visit);
     }
 }

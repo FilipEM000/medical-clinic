@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "znaleziono użytkowników",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @GetMapping
-    public List<UserDto> getAll() {
-        return userService.getAllUsers();
+    public Page<UserDto> getAll(Pageable pageable) {
+        return userService.getAllUsers(pageable);
     }
 
     @Operation(summary = "Zwróć użytkownika po emailu")

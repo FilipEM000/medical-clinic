@@ -1,10 +1,8 @@
 package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.update.ChangePasswordCommand;
-import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
 import com.FilipEM000.medical_clinic.dto.UserDto;
-import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.exception.UserNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.UserMapper;
 import com.FilipEM000.medical_clinic.model.User;
@@ -14,8 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,25 +40,26 @@ public class UserServiceTest {
     @Test
     void getAllUsers_dataCorrect_usersReturned() {
         // given
+        Pageable pageable = PageRequest.of(0, 10);
         User user = new User(0L, "email1", "123", "Adam", "Kafka", null, null);
         User user2 = new User(1L, "email2", "456", "Ola", "Kwiat", null, null);
-        List<User> users = List.of(user, user2);
-        when(userJpaRepository.findAll()).thenReturn(users);
+        Page<User> users = new PageImpl<>(List.of(user, user2));
+        when(userJpaRepository.findAll(pageable)).thenReturn(users);
 
         //when
-        List<UserDto> result = userService.getAllUsers();
+        Page<UserDto> result = userService.getAllUsers(pageable);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(2, result.size()),
-                () -> Assertions.assertEquals(0L, result.getFirst().id()),
-                () -> Assertions.assertEquals("email1", result.getFirst().email()),
-                () -> Assertions.assertEquals("Adam", result.getFirst().firstName()),
-                () -> Assertions.assertEquals("Kafka", result.getFirst().lastName()),
-                () -> Assertions.assertEquals(1L, result.get(1).id()),
-                () -> Assertions.assertEquals("email2", result.get(1).email()),
-                () -> Assertions.assertEquals("Ola", result.get(1).firstName()),
-                () -> Assertions.assertEquals("Kwiat", result.get(1).lastName())
+                () -> Assertions.assertEquals(2, result.getTotalElements()),
+                () -> Assertions.assertEquals(0L, result.getContent().getFirst().id()),
+                () -> Assertions.assertEquals("email1", result.getContent().getFirst().email()),
+                () -> Assertions.assertEquals("Adam", result.getContent().getFirst().firstName()),
+                () -> Assertions.assertEquals("Kafka", result.getContent().getFirst().lastName()),
+                () -> Assertions.assertEquals(1L, result.getContent().get(1).id()),
+                () -> Assertions.assertEquals("email2", result.getContent().get(1).email()),
+                () -> Assertions.assertEquals("Ola", result.getContent().get(1).firstName()),
+                () -> Assertions.assertEquals("Kwiat", result.getContent().get(1).lastName())
         );
     }
 

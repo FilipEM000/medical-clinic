@@ -16,6 +16,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -60,27 +64,28 @@ public class VisitServiceTest {
     @Test
     void getAllVisits_dataCorrect_VisitsReturned() {
         //given
+        Pageable pageable = PageRequest.of(0, 10);
         Visit visit = new Visit(0L, null, null, null, null);
         Visit visit2 = new Visit(1L, null, null, null, null);
-        List<Visit> visits = List.of(visit, visit2);
-        when(visitJpaRepository.findAll()).thenReturn(visits);
+        Page<Visit> visits = new PageImpl<>(List.of(visit, visit2));
+        when(visitJpaRepository.findAll(pageable)).thenReturn(visits);
 
         //when
-        List<VisitDto> result = visitService.getAllVisits();
+        Page<VisitDto> result = visitService.getAllVisits(pageable);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(2, result.size()),
-                () -> Assertions.assertEquals(0L, result.getFirst().id()),
-                () -> Assertions.assertNull(result.getFirst().startDate()),
-                () -> Assertions.assertNull(result.getFirst().endDate()),
-                () -> Assertions.assertNull(result.getFirst().patient()),
-                () -> Assertions.assertNull(result.getFirst().doctor()),
-                () -> Assertions.assertEquals(1L, result.get(1).id()),
-                () -> Assertions.assertNull(result.get(1).startDate()),
-                () -> Assertions.assertNull(result.get(1).endDate()),
-                () -> Assertions.assertNull(result.get(1).patient()),
-                () -> Assertions.assertNull(result.get(1).doctor())
+                () -> Assertions.assertEquals(2, result.getTotalElements()),
+                () -> Assertions.assertEquals(0L, result.getContent().getFirst().id()),
+                () -> Assertions.assertNull(result.getContent().getFirst().startDate()),
+                () -> Assertions.assertNull(result.getContent().getFirst().endDate()),
+                () -> Assertions.assertNull(result.getContent().getFirst().patient()),
+                () -> Assertions.assertNull(result.getContent().getFirst().doctor()),
+                () -> Assertions.assertEquals(1L, result.getContent().get(1).id()),
+                () -> Assertions.assertNull(result.getContent().get(1).startDate()),
+                () -> Assertions.assertNull(result.getContent().get(1).endDate()),
+                () -> Assertions.assertNull(result.getContent().get(1).patient()),
+                () -> Assertions.assertNull(result.getContent().get(1).doctor())
         );
     }
 

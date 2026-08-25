@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.service.PatientService;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +32,8 @@ public class PatientController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PatientDto.class)))
     @GetMapping
-    public List<PatientDto> getAll() {
-        return patientService.getAllPatients();
+    public PageDto<PatientDto> getAll(Pageable pageable) {
+        return patientService.getAllPatients(pageable);
     }
 
     @Operation(summary = "Zwróć pacjenta po emailu")

@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
@@ -17,6 +18,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -51,27 +56,28 @@ public class PatientServiceTest {
     @Test
     void getAllPatients_dataCorrect_patientsReturned() {
         // given
+        Pageable pageable = PageRequest.of(0, 10);
         Patient patient = new Patient(0L, "1", "123", null, null, null);
         Patient patient2 = new Patient(1L, "2", "456", null, null, null);
-        List<Patient> patients = List.of(patient, patient2);
-        when(patientJpaRepository.findAll()).thenReturn(patients);
+        Page<Patient> patients = new PageImpl<>(List.of(patient, patient2));
+        when(patientJpaRepository.findAll(pageable)).thenReturn(new PageDto<>());
 
         //when
-        List<PatientDto> result = patientService.getAllPatients();
+        Page<PatientDto> result = patientService.getAllPatients(pageable);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(2, result.size()),
-                () -> Assertions.assertEquals(0L, result.getFirst().id()),
-                () -> Assertions.assertEquals("1", result.getFirst().idCardNo()),
-                () -> Assertions.assertEquals("123", result.getFirst().phoneNumber()),
-                () -> Assertions.assertNull(result.getFirst().birthday()),
-                () -> Assertions.assertNull(result.getFirst().user()),
-                () -> Assertions.assertEquals(1L, result.get(1).id()),
-                () -> Assertions.assertEquals("2", result.get(1).idCardNo()),
-                () -> Assertions.assertEquals("456", result.get(1).phoneNumber()),
-                () -> Assertions.assertNull(result.get(1).birthday()),
-                () -> Assertions.assertNull(result.get(1).user())
+                () -> Assertions.assertEquals(2, result.getTotalElements()),
+                () -> Assertions.assertEquals(0L, result.getContent().getFirst().id()),
+                () -> Assertions.assertEquals("1", result.getContent().getFirst().idCardNo()),
+                () -> Assertions.assertEquals("123", result.getContent().getFirst().phoneNumber()),
+                () -> Assertions.assertNull(result.getContent().getFirst().birthday()),
+                () -> Assertions.assertNull(result.getContent().getFirst().user()),
+                () -> Assertions.assertEquals(1L, result.getContent().get(1).id()),
+                () -> Assertions.assertEquals("2", result.getContent().get(1).idCardNo()),
+                () -> Assertions.assertEquals("456", result.getContent().get(1).phoneNumber()),
+                () -> Assertions.assertNull(result.getContent().get(1).birthday()),
+                () -> Assertions.assertNull(result.getContent().get(1).user())
         );
     }
 

@@ -5,7 +5,6 @@ import com.FilipEM000.medical_clinic.command.update.UpdateDoctorCommand;
 import com.FilipEM000.medical_clinic.dto.DoctorDto;
 import com.FilipEM000.medical_clinic.exception.ClinicNotFoundException;
 import com.FilipEM000.medical_clinic.exception.DoctorNotFoundException;
-import com.FilipEM000.medical_clinic.exception.UserNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.ClinicMapper;
 import com.FilipEM000.medical_clinic.mapper.DoctorMapper;
 import com.FilipEM000.medical_clinic.mapper.UserMapper;
@@ -18,6 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -52,25 +55,26 @@ public class DoctorServiceTest {
     @Test
     void getAllDoctors_dataCorrect_doctorsReturned() {
         //given
+        Pageable pageable = PageRequest.of(0, 10);
         Doctor doctor1 = new Doctor(0L, null, "cardiologist", null, null);
         Doctor doctor2 = new Doctor(1L, null, "surgeon", null, null);
-        List<Doctor> doctors = List.of(doctor1, doctor2);
-        when(doctorJpaRepository.findAll()).thenReturn(doctors);
+        Page<Doctor> doctors = new PageImpl<>(List.of(doctor1, doctor2));
+        when(doctorJpaRepository.findAll(pageable)).thenReturn(doctors);
 
         //when
-        List<DoctorDto> result = doctorService.getAllDoctors();
+        Page<DoctorDto> result = doctorService.getAllDoctors(pageable);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(2, result.size()),
-                () -> Assertions.assertEquals(0L, result.getFirst().id()),
-                () -> Assertions.assertNull(result.getFirst().user()),
-                () -> Assertions.assertEquals("cardiologist", result.getFirst().specialization()),
-                () -> Assertions.assertNull(result.getFirst().clinics()),
-                () -> Assertions.assertEquals(1L, result.get(1).id()),
-                () -> Assertions.assertNull(result.get(1).user()),
-                () -> Assertions.assertEquals("surgeon", result.get(1).specialization()),
-                () -> Assertions.assertNull(result.get(1).clinics())
+                () -> Assertions.assertEquals(2, result.getTotalElements()),
+                () -> Assertions.assertEquals(0L, result.getContent().getFirst().id()),
+                () -> Assertions.assertNull(result.getContent().getFirst().user()),
+                () -> Assertions.assertEquals("cardiologist", result.getContent().getFirst().specialization()),
+                () -> Assertions.assertNull(result.getContent().getFirst().clinics()),
+                () -> Assertions.assertEquals(1L, result.getContent().get(1).id()),
+                () -> Assertions.assertNull(result.getContent().get(1).user()),
+                () -> Assertions.assertEquals("surgeon", result.getContent().get(1).specialization()),
+                () -> Assertions.assertNull(result.getContent().get(1).clinics())
         );
     }
 
@@ -91,6 +95,7 @@ public class DoctorServiceTest {
                 () -> Assertions.assertNull(result.clinics())
         );
     }
+
     @Test
     void getDoctorByEmail_doctorNotFound_throwsException() {
         //given

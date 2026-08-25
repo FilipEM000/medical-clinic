@@ -6,6 +6,8 @@ import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.service.VisitService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class VisitController {
 
     @Operation(description = "Return all visits")
     @GetMapping
-    public List<VisitDto> getAll() {
-        return visitService.getAllVisits();
+    public Page<VisitDto> getAll(Pageable pageable) {
+        return visitService.getAllVisits(pageable);
     }
 
     @Operation(description = "Create new visit")

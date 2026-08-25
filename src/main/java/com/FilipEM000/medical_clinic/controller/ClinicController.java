@@ -10,9 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -28,8 +28,8 @@ public class ClinicController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ClinicDto.class)))
     @GetMapping
-    public List<ClinicDto> getAll() {
-        return clinicService.getAllClinics();
+    public Page<ClinicDto> getAll(Pageable pageable) {
+        return clinicService.getAllClinics(pageable);
     }
 
     @Operation(description = "Zwróć klinikę po nazwie")

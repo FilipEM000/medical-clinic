@@ -9,9 +9,9 @@ import com.FilipEM000.medical_clinic.model.Clinic;
 import com.FilipEM000.medical_clinic.repository.ClinicJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +19,9 @@ public class ClinicService {
     private final ClinicJpaRepository clinicRepository;
     private final ClinicMapper clinicMapper;
 
-    public List<ClinicDto> getAllClinics() {
-        return clinicRepository.findAll().stream()
-                .map(clinicMapper::mapToDto)
-                .toList();
+    public Page<ClinicDto> getAllClinics(Pageable pageable) {
+        return clinicRepository.findAll(pageable)
+                .map(clinicMapper::mapToDto);
     }
 
     public ClinicDto getClinicByName(String name) {

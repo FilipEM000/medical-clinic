@@ -12,6 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,29 +40,30 @@ public class ClinicServiceTest {
     @Test
     void getAllClinics_dataCorrect_clinicsReturned() {
         //given
+        Pageable pageable = PageRequest.of(0,10);
         Clinic clinic = new Clinic(0L, "Clinic", "Poznan", "11-111", "street", "44", null);
         Clinic clinic2 = new Clinic(1L, "Hospital", "Poznan", "22-222", "wide", "63", null);
-        List<Clinic> clinics = List.of(clinic, clinic2);
-        when(clinicJpaRepository.findAll()).thenReturn(clinics);
+        Page<Clinic> clinics = new PageImpl<>(List.of(clinic, clinic2));
+        when(clinicJpaRepository.findAll(pageable)).thenReturn(clinics);
 
         //when
-        List<ClinicDto> result = clinicService.getAllClinics();
+        Page<ClinicDto> result = clinicService.getAllClinics(pageable);
 
         //then
         Assertions.assertAll(
-                () -> Assertions.assertEquals(2, result.size()),
-                () -> Assertions.assertEquals(0L, result.getFirst().id()),
-                () -> Assertions.assertEquals("Clinic", result.getFirst().name()),
-                () -> Assertions.assertEquals("Poznan", result.getFirst().city()),
-                () -> Assertions.assertEquals("11-111", result.getFirst().postcode()),
-                () -> Assertions.assertEquals("street", result.getFirst().street()),
-                () -> Assertions.assertEquals("44", result.getFirst().streetNumber()),
-                () -> Assertions.assertEquals(1L, result.get(1).id()),
-                () -> Assertions.assertEquals("Hospital", result.get(1).name()),
-                () -> Assertions.assertEquals("Poznan", result.get(1).city()),
-                () -> Assertions.assertEquals("22-222", result.get(1).postcode()),
-                () -> Assertions.assertEquals("wide", result.get(1).street()),
-                () -> Assertions.assertEquals("63", result.get(1).streetNumber())
+                () -> Assertions.assertEquals(2, result.getTotalElements()),
+                () -> Assertions.assertEquals(0L, result.getContent().getFirst().id()),
+                () -> Assertions.assertEquals("Clinic", result.getContent().getFirst().name()),
+                () -> Assertions.assertEquals("Poznan", result.getContent().getFirst().city()),
+                () -> Assertions.assertEquals("11-111", result.getContent().getFirst().postcode()),
+                () -> Assertions.assertEquals("street", result.getContent().getFirst().street()),
+                () -> Assertions.assertEquals("44", result.getContent().getFirst().streetNumber()),
+                () -> Assertions.assertEquals(1L, result.getContent().get(1).id()),
+                () -> Assertions.assertEquals("Hospital", result.getContent().get(1).name()),
+                () -> Assertions.assertEquals("Poznan", result.getContent().get(1).city()),
+                () -> Assertions.assertEquals("22-222", result.getContent().get(1).postcode()),
+                () -> Assertions.assertEquals("wide", result.getContent().get(1).street()),
+                () -> Assertions.assertEquals("63", result.getContent().get(1).streetNumber())
         );
     }
 

@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
 import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
@@ -11,6 +12,8 @@ import com.FilipEM000.medical_clinic.model.Patient;
 import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +25,10 @@ public class PatientService {
     private final PatientMapper patientMapper;
     private final VisitMapper visitMapper;
 
-    public List<PatientDto> getAllPatients() {
-        return patientRepository.findAll().stream()
-                .map(patientMapper::mapToDto)
-                .toList();
+    public PageDto<PatientDto> getAllPatients(Pageable pageable) {
+        Page<PatientDto> page = patientRepository.findAll(pageable)
+                .map(patientMapper::mapToDto);
+        return new PageDto<>(page);
     }
 
     public PatientDto getPatientByEmail(String email) {

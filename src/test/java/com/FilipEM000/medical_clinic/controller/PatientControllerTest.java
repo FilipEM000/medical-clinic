@@ -49,8 +49,9 @@ public class PatientControllerTest {
         UserDto user2 = new UserDto(1L, "test_email2", "test_first_name2", "test_last_name2");
         PatientDto patient = new PatientDto(0L, "1", "123", LocalDate.of(1999, 5, 2), user);
         PatientDto patient2 = new PatientDto(1L, "2", "456", LocalDate.of(2003, 7, 23), user2);
-        Page<PatientDto> patients = new PageImpl<>(List.of(patient, patient2));
-        when(patientService.getAllPatients(any(Pageable.class))).thenReturn(new PageDto<>(patients));
+        Page<PatientDto> page = new PageImpl<>(List.of(patient, patient2));
+        PageDto<PatientDto> patients = new PageDto<>(page);
+        when(patientService.getAllPatients(any(Pageable.class))).thenReturn(patients);
 
         mockMvc.perform(get("/patients"))
                 .andExpect(status().isOk())

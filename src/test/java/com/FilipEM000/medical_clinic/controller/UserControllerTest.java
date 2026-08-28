@@ -2,7 +2,10 @@ package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.command.update.ChangePasswordCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
+import com.FilipEM000.medical_clinic.dto.DoctorDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.UserDto;
+import com.FilipEM000.medical_clinic.model.User;
 import com.FilipEM000.medical_clinic.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,8 @@ public class UserControllerTest {
     void getAll_dataCorrect_usersReturned() throws Exception {
         UserDto user = new UserDto(0L, "test_email", "test_first_name", "test_last_name");
         UserDto user2 = new UserDto(1L, "test_email_2", "test_first_name_2", "test_last_name_2");
-        Page<UserDto> users = new PageImpl<>(List.of(user, user2));
+        Page<UserDto> page = new PageImpl<>(List.of(user, user2));
+        PageDto<UserDto> users = new PageDto<>(page);
 
         when(userService.getAllUsers(any(Pageable.class))).thenReturn(users);
 

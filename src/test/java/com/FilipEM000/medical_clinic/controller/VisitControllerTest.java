@@ -2,6 +2,9 @@ package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.command.create.CreateVisitCommand;
 import com.FilipEM000.medical_clinic.command.update.AssignPatientCommand;
+import com.FilipEM000.medical_clinic.dto.DoctorDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
+import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.service.VisitService;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +47,8 @@ public class VisitControllerTest {
     void getAll_dataCorrect_visitsReturned() throws Exception {
         VisitDto visit = new VisitDto(0L, LocalDateTime.of(2026, 12, 5, 15, 15, 0), LocalDateTime.of(2026, 12, 5, 15, 30, 0), null, null);
         VisitDto visit2 = new VisitDto(1L, LocalDateTime.of(2027, 12, 5, 15, 15, 0), LocalDateTime.of(2027, 12, 5, 15, 30, 0), null, null);
-        Page<VisitDto> visits = new PageImpl<>(List.of(visit, visit2));
+        Page<VisitDto> page = new PageImpl<>(List.of(visit, visit2));
+        PageDto<VisitDto> visits = new PageDto<>(page);
         when(visitService.getAllVisits(any(Pageable.class))).thenReturn(visits);
 
         mockMvc.perform(get("/visits"))
@@ -62,12 +67,28 @@ public class VisitControllerTest {
 
     @Test
     void create_dataCorrect_visitReturned() throws Exception {
-        CreateVisitCommand createVisitCommand = new CreateVisitCommand(null, null, null);
+        LocalDateTime startDate = LocalDateTime.of(2026, 12, 5, 15, 15, 0);
+        LocalDateTime endDate = LocalDateTime.of(2026, 12, 5, 15, 30, 0);
+        UserDto user = new UserDto(0L, "test_email", "test_first_name", "test_last_name");
+        DoctorDto doctor = new DoctorDto(0L, "test_specialization", user, new ArrayList<>());
+        CreateVisitCommand createVisitCommand = new CreateVisitCommand(startDate, endDate, 0L);
+        VisitDto visit = new VisitDto(0L, startDate, endDate, null, doctor);
+        when(visitService.createVisit(createVisitCommand)).thenReturn(visit);
 
         mockMvc.perform(post("/visits")
                         .content(objectMapper.writeValueAsString(createVisitCommand))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(0))
+                .andExpect(jsonPath("$.startDate").value("2026-12-05T15:15:00"))
+                .andExpect(jsonPath("$.endDate").value("2026-12-05T15:30:00"))
+                .andExpect(jsonPath("$.doctor.id").value(0))
+                .andExpect(jsonPath("$.doctor.specialization").value("test_specialization"))
+                .andExpect(jsonPath("$.doctor.user.id").value(0))
+                .andExpect(jsonPath("$.doctor.user.email").value("test_email"))
+                .andExpect(jsonPath("$.doctor.user.firstName").value("test_first_name"))
+                .andExpect(jsonPath("$.doctor.user.lastName").value("test_last_name"))
+                .andExpect(jsonPath("$.doctor.clinics").isArray());
         verify(visitService).createVisit(createVisitCommand);
     }
 

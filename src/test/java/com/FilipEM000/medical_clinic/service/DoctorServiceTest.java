@@ -3,6 +3,7 @@ package com.FilipEM000.medical_clinic.service;
 import com.FilipEM000.medical_clinic.command.create.CreateDoctorCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateDoctorCommand;
 import com.FilipEM000.medical_clinic.dto.DoctorDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.exception.ClinicNotFoundException;
 import com.FilipEM000.medical_clinic.exception.DoctorNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.ClinicMapper;
@@ -62,7 +63,7 @@ public class DoctorServiceTest {
         when(doctorJpaRepository.findAll(pageable)).thenReturn(doctors);
 
         //when
-        Page<DoctorDto> result = doctorService.getAllDoctors(pageable);
+        PageDto<DoctorDto> result = doctorService.getAllDoctors(pageable);
 
         //then
         Assertions.assertAll(

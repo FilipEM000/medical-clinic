@@ -60,10 +60,10 @@ public class PatientServiceTest {
         Patient patient = new Patient(0L, "1", "123", null, null, null);
         Patient patient2 = new Patient(1L, "2", "456", null, null, null);
         Page<Patient> patients = new PageImpl<>(List.of(patient, patient2));
-        when(patientJpaRepository.findAll(pageable)).thenReturn(new PageDto<>());
+        when(patientJpaRepository.findAll(pageable)).thenReturn(patients);
 
         //when
-        Page<PatientDto> result = patientService.getAllPatients(pageable);
+        PageDto<PatientDto> result = patientService.getAllPatients(pageable);
 
         //then
         Assertions.assertAll(

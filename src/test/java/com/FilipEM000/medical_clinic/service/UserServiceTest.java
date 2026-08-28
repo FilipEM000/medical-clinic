@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.update.ChangePasswordCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateUserCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.exception.UserNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.UserMapper;
@@ -47,7 +48,7 @@ public class UserServiceTest {
         when(userJpaRepository.findAll(pageable)).thenReturn(users);
 
         //when
-        Page<UserDto> result = userService.getAllUsers(pageable);
+        PageDto<UserDto> result = userService.getAllUsers(pageable);
 
         //then
         Assertions.assertAll(

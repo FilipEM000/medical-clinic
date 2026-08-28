@@ -3,6 +3,7 @@ package com.FilipEM000.medical_clinic.service;
 import com.FilipEM000.medical_clinic.command.create.CreateClinicCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateClinicCommand;
 import com.FilipEM000.medical_clinic.dto.ClinicDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.exception.ClinicNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.ClinicMapper;
 import com.FilipEM000.medical_clinic.model.Clinic;
@@ -47,7 +48,7 @@ public class ClinicServiceTest {
         when(clinicJpaRepository.findAll(pageable)).thenReturn(clinics);
 
         //when
-        Page<ClinicDto> result = clinicService.getAllClinics(pageable);
+        PageDto<ClinicDto> result = clinicService.getAllClinics(pageable);
 
         //then
         Assertions.assertAll(

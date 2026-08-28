@@ -3,6 +3,7 @@ package com.FilipEM000.medical_clinic.controller;
 import com.FilipEM000.medical_clinic.command.create.CreateClinicCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateClinicCommand;
 import com.FilipEM000.medical_clinic.dto.ClinicDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.service.ClinicService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,8 @@ public class ClinicControllerTest {
     void getAll_dataCorrect_clinicsReturned() throws Exception {
         ClinicDto clinic = new ClinicDto(0L, "test_name", "test_city", "test_postcode", "test_street", "test_street_number");
         ClinicDto clinic2 = new ClinicDto(1L, "test_name_2", "test_city_2", "test_postcode_2", "test_street_2", "test_street_number_2");
-        Page<ClinicDto> clinics = new PageImpl<>(List.of(clinic, clinic2));
+        Page<ClinicDto> page = new PageImpl<>(List.of(clinic, clinic2));
+        PageDto<ClinicDto> clinics = new PageDto<>(page);
         when(clinicService.getAllClinics(any(Pageable.class))).thenReturn(clinics);
 
         mockMvc.perform(get("/clinics"))
@@ -84,11 +86,19 @@ public class ClinicControllerTest {
     @Test
     void create_dataCorrect_clinicCreated() throws Exception {
         CreateClinicCommand createClinicCommand = new CreateClinicCommand("test_name", "test_city", "test_postcode", "test_street", "test_street_number");
+        ClinicDto clinic = new ClinicDto(0L, "test_name", "test_city", "test_postcode", "test_street", "test_street_number");
+        when(clinicService.createClinic(createClinicCommand)).thenReturn(clinic);
 
         mockMvc.perform(post("/clinics")
                         .content(objectMapper.writeValueAsString(createClinicCommand))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(0))
+                .andExpect(jsonPath("$.name").value("test_name"))
+                .andExpect(jsonPath("$.city").value("test_city"))
+                .andExpect(jsonPath("$.postcode").value("test_postcode"))
+                .andExpect(jsonPath("$.street").value("test_street"))
+                .andExpect(jsonPath("$.streetNumber").value("test_street_number"));
         verify(clinicService).createClinic(createClinicCommand);
     }
 

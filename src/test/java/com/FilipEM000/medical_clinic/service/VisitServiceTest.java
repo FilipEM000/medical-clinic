@@ -2,6 +2,7 @@ package com.FilipEM000.medical_clinic.service;
 
 import com.FilipEM000.medical_clinic.command.create.CreateVisitCommand;
 import com.FilipEM000.medical_clinic.command.update.AssignPatientCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.exception.*;
 import com.FilipEM000.medical_clinic.mapper.*;
@@ -71,7 +72,7 @@ public class VisitServiceTest {
         when(visitJpaRepository.findAll(pageable)).thenReturn(visits);
 
         //when
-        Page<VisitDto> result = visitService.getAllVisits(pageable);
+        PageDto<VisitDto> result = visitService.getAllVisits(pageable);
 
         //then
         Assertions.assertAll(

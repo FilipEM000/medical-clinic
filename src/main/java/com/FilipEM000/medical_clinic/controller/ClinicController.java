@@ -1,8 +1,10 @@
 package com.FilipEM000.medical_clinic.controller;
 
 import com.FilipEM000.medical_clinic.command.create.CreateClinicCommand;
+import com.FilipEM000.medical_clinic.command.get.GetPageCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateClinicCommand;
 import com.FilipEM000.medical_clinic.dto.ClinicDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.service.ClinicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,13 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+@Slf4j
 @RestController
 @RequestMapping("/clinics")
 @RequiredArgsConstructor
@@ -28,8 +30,9 @@ public class ClinicController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ClinicDto.class)))
     @GetMapping
-    public Page<ClinicDto> getAll(Pageable pageable) {
-        return clinicService.getAllClinics(pageable);
+    public PageDto<ClinicDto> getAll(GetPageCommand getPageCommand) {
+        log.info("Getting all clinics with pagination: {}", getPageCommand);
+        return clinicService.getAllClinics(getPageCommand.toPageable());
     }
 
     @Operation(description = "Zwróć klinikę po nazwie")
@@ -41,6 +44,7 @@ public class ClinicController {
     })
     @GetMapping("/{name}")
     public ClinicDto getByName(@PathVariable String name) {
+        log.info("Getting clinic by name: {}", name);
         return clinicService.getClinicByName(name);
     }
 
@@ -54,6 +58,7 @@ public class ClinicController {
     @PostMapping
     @ResponseStatus(CREATED)
     public ClinicDto create(@RequestBody CreateClinicCommand createClinicCommand) {
+        log.info("Creating new clinic: {}", createClinicCommand);
         return clinicService.createClinic(createClinicCommand);
     }
 
@@ -65,6 +70,7 @@ public class ClinicController {
     @DeleteMapping("/{name}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable String name) {
+        log.info("Deleting clinic with name: {}", name);
         clinicService.deleteClinic(name);
     }
 
@@ -76,6 +82,7 @@ public class ClinicController {
     @PutMapping("/{name}")
     @ResponseStatus(NO_CONTENT)
     public void update(@PathVariable String name, @RequestBody UpdateClinicCommand updateClinicCommand) {
+        log.info("Updating clinic with name: {}", name);
         clinicService.updateClinic(name, updateClinicCommand);
     }
 }

@@ -3,6 +3,7 @@ package com.FilipEM000.medical_clinic.controller;
 import com.FilipEM000.medical_clinic.command.create.CreateDoctorCommand;
 import com.FilipEM000.medical_clinic.command.update.UpdateDoctorCommand;
 import com.FilipEM000.medical_clinic.dto.DoctorDto;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.UserDto;
 import com.FilipEM000.medical_clinic.service.DoctorService;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,8 @@ public class DoctorControllerTest {
         UserDto user2 = new UserDto(1L, "test_email_2", "test_first_name_2", "test_last_name_2");
         DoctorDto doctor = new DoctorDto(0L, "test_specialization", user, new ArrayList<>());
         DoctorDto doctor2 = new DoctorDto(1L, "test_specialization_2", user2, new ArrayList<>());
-        Page<DoctorDto> doctors = new PageImpl<>(List.of(doctor, doctor2));
+        Page<DoctorDto> page = new PageImpl<>(List.of(doctor, doctor2));
+        PageDto<DoctorDto> doctors = new PageDto<>(page);
         when(doctorService.getAllDoctors(any(Pageable.class))).thenReturn(doctors);
 
         mockMvc.perform(get("/doctors"))

@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-users-table
+      author: FilipEM000
+      comment: "Creates the users table"
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_users_email
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+      rollback:
+        - dropTable:
+            tableName: users
+
+  - changeSet:
+      id: 002-add-user-id-to-patient
+      author: FilipEM000
+      comment: "Adds user id to patient table"
+      changes:
+        - addColumn:
+            tableName: patients
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_patient_user
+                    references: users(id)
+      rollback:
+        - dropColumn:
+            tableName: patients
+            columnName: user_id

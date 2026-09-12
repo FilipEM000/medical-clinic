@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "patients")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Patient {

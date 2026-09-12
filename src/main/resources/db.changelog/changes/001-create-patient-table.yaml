@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-patient-table
+      author: FilipEM000
+      comment: "Creates the patient table"
+      changes:
+        - createTable:
+            tableName: patients
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_patient
+                    nullable: false
+              - column:
+                  name: id_card_no
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: birthday
+                  type: DATE
+      rollback:
+        - dropTable:
+            tableName: patients

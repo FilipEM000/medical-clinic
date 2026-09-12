@@ -1,59 +1,84 @@
 package com.FilipEM000.medical_clinic.service;
 
-import com.FilipEM000.medical_clinic.command.CreatePatientCommand;
+import com.FilipEM000.medical_clinic.command.create.CreatePatientCommand;
+import com.FilipEM000.medical_clinic.command.update.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.PageDto;
 import com.FilipEM000.medical_clinic.dto.PatientDto;
-import com.FilipEM000.medical_clinic.command.UpdatePatientCommand;
+import com.FilipEM000.medical_clinic.dto.VisitDto;
 import com.FilipEM000.medical_clinic.exception.PatientNotFoundException;
 import com.FilipEM000.medical_clinic.mapper.PatientMapper;
+import com.FilipEM000.medical_clinic.mapper.VisitMapper;
 import com.FilipEM000.medical_clinic.model.Patient;
-import com.FilipEM000.medical_clinic.repository.PatientRepository;
+import com.FilipEM000.medical_clinic.model.Visit;
+import com.FilipEM000.medical_clinic.repository.PatientJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PatientService {
-    private final PatientRepository patientRepository;
+    private final PatientJpaRepository patientRepository;
     private final PatientMapper patientMapper;
+    private final VisitMapper visitMapper;
 
-    public List<PatientDto> getAllPatients() {
-        return patientRepository.findAll().stream()
-                .map(patientMapper::mapToDto)
-                .toList();
+    public PageDto<PatientDto> getAllPatients(Pageable pageable) {
+        log.info("Fetching all patients");
+        Page<PatientDto> page = patientRepository.findAll(pageable)
+                .map(patientMapper::mapToDto);
+        log.info("Fetched {} patients successfully", page.getContent().size());
+        return new PageDto<>(page);
     }
 
     public PatientDto getPatientByEmail(String email) {
-        Patient patient = findPatientByEmail(email);
+        log.info("Fetching patient by email: {}", email);
+        Patient patient = findPatientByUserEmail(email);
+        log.info("Fetched patient successfully");
         return patientMapper.mapToDto(patient);
     }
 
-    public PatientDto createPatient(CreatePatientCommand dto) {
-        Patient patient = patientMapper.mapToEntity(dto);
+    @Transactional
+    public PatientDto createPatient(CreatePatientCommand createPatientCommand) {
+        log.info("Process of creating patient started");
+        Patient patient = patientMapper.mapToEntity(createPatientCommand);
         Patient saved = patientRepository.save(patient);
+        log.info("Process of creating patient completed successfully");
         return patientMapper.mapToDto(saved);
     }
 
     public void deletePatient(String email) {
-        Patient patient = findPatientByEmail(email);
-        patientRepository.remove(patient);
+        log.info("Process of deleting patient '{}' started", email);
+        Patient patient = findPatientByUserEmail(email);
+        patientRepository.delete(patient);
+        log.info("Patient '{}' deleted successfully", email);
     }
 
-    public PatientDto updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
-        Patient patient = findPatientByEmail(email);
+    @Transactional
+    public void updatePatient(String email, UpdatePatientCommand updatePatientCommand) {
+        log.info("Process of updating patient '{}' started", email);
+        Patient patient = findPatientByUserEmail(email);
         patient.update(updatePatientCommand);
-        return patientMapper.mapToDto(patient);
+        patientRepository.save(patient);
+        log.info("Patient '{}' updated successfully", email);
     }
 
-    public PatientDto changePassword(String email, String password) {
-        Patient patient = findPatientByEmail(email);
-        patient.changePassword(password);
-        return patientMapper.mapToDto(patient);
+    public List<VisitDto> getAllVisits(String email) {
+        log.info("Fetching all visits for patient '{}'", email);
+        List<Visit> visits = findPatientByUserEmail(email).getVisits();
+        log.info("Found {} visits for patient '{}'", visits.size(), email);
+        return visits.stream()
+                .map(visitMapper::mapToDto)
+                .toList();
     }
 
-    private Patient findPatientByEmail(String email) {
-        return patientRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException(String.format("Nie znaleziono pacjenta o emailu %s", email)));
+    private Patient findPatientByUserEmail(String email) {
+        return patientRepository.findByUserEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException(email));
     }
 }

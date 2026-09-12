@@ -4,6 +4,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public class PatientNotFoundException extends MedicalClinicException {
     public PatientNotFoundException(String message) {
-        super(NOT_FOUND, message);
+        super(NOT_FOUND, "Patient with email '" + message + "' not found");
     }
 }
